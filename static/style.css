@@ -1,4 +1,9 @@
 .comment {
-    border-top:dotted 1px #ddd;
-    font-size:0.7em;
+    border-top: dotted 1px #ddd;
+    font-size: 0.7em;
+}
+
+p {
+    line-height: 1.5;
+    margin: 0;
 }
