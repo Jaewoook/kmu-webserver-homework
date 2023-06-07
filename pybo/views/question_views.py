@@ -76,7 +76,7 @@ def question_history(request, question_id):
     """
     pybo 질문 수정내역
     """
-    question_histories = QuestionHistory.objects.filter(question__id=question_id)
+    question_histories = QuestionHistory.objects.filter(question__id=question_id).order_by("-create_date")
 
     context = {
         "question_histories": question_histories

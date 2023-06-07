@@ -80,7 +80,7 @@ def answer_history(request, answer_id):
     """
     pybo 답변 수정내역
     """
-    answer_histories = AnswerHistory.objects.filter(answer__id=answer_id)
+    answer_histories = AnswerHistory.objects.filter(answer__id=answer_id).order_by("-create_date")
 
     context = {
         "answer_histories": answer_histories
