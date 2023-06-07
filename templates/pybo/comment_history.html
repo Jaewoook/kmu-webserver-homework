@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-3">
+    <h3>댓글 수정내역</h3>
+    {% for history in comment_histories %}
+    <div class="card">
+        <div class="card-body">
+            <div class="card-text">{{ history.content }}</div>
+            <div class="d-flex justify-content-end">
+                <div class="badge badge-light p-2 text-left d-inline-flex flex-column justify-content-center">
+                    <p class="mb-2">author: {{ history.comment.author.username }}</p>
+                    <p>
+                        created at:<br />
+                        {{ history.create_date }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

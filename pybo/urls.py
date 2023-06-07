@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import base_views, question_views, answer_views, comment_answer_views, comment_question_views, vote_views
+from .views import base_views, question_views, answer_views, comment_common_views, comment_answer_views, comment_question_views, vote_views
 
 app_name = 'pybo'
 
@@ -13,11 +13,13 @@ urlpatterns = [
     path('question/create/', question_views.question_create, name='question_create'),
     path('question/modify/<int:question_id>/', question_views.question_modify, name='question_modify'),
     path('question/delete/<int:question_id>/', question_views.question_delete, name='question_delete'),
+    path('question/history/<int:question_id>/', question_views.question_history, name='question_history'),
 
     # answer_views.py
     path('answer/create/<int:question_id>/', answer_views.answer_create, name='answer_create'),
     path('answer/modify/<int:answer_id>/', answer_views.answer_modify, name='answer_modify'),
     path('answer/delete/<int:answer_id>/', answer_views.answer_delete, name='answer_delete'),
+    path('answer/history/<int:answer_id>/', answer_views.answer_history, name='answer_history'),
 
     # comment_views.py
     path('comment/create/question/<int:question_id>/', comment_question_views.comment_create_question, name='comment_create_question'),
@@ -26,6 +28,7 @@ urlpatterns = [
     path('comment/create/answer/<int:answer_id>/', comment_answer_views.comment_create_answer, name='comment_create_answer'),
     path('comment/modify/answer/<int:comment_id>/', comment_answer_views.comment_modify_answer, name='comment_modify_answer'),
     path('comment/delete/answer/<int:comment_id>/', comment_answer_views.comment_delete_answer, name='comment_delete_answer'),
+    path('comment/history/<int:comment_id>/', comment_common_views.comment_history, name='comment_history'),
 
     # vote_views.py
     path('vote/question/<int:question_id>/', vote_views.vote_question, name='vote_question'),

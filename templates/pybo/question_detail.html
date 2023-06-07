@@ -32,7 +32,7 @@
                                 {{ question.modify_date }}
                             </p>
                             <p>edit count: {{ question.edit_count }}</p>
-                            <a>show edit history</a>
+                            <a href="{% url 'pybo:question_history' question.id %}">show edit history</a>
                         </div>
                         {% endif %}
                         <div class="badge badge-light p-2 text-left d-inline-flex flex-column justify-content-center">
@@ -61,10 +61,12 @@
                             <span>
                                 - {{ comment.author }}, {{ comment.create_date }}
                                 {% if comment.modify_date %}
-                                (수정: {{ comment.modify_date }})
-                                (수정 횟수: {{ comment.edit_count }})
+                                (수정: {{ comment.modify_date }}, 수정 횟수: {{ comment.edit_count }})
                                 {% endif %}
                             </span>
+                            {% if comment.edit_count > 0 %}
+                            <a href="{% url 'pybo:comment_history' comment.id %}">view edit history</a>
+                            {% endif %}
                             {% if request.user == comment.author %}
                             <a href="{% url 'pybo:comment_modify_question' comment.id  %}" class="small">수정</a>,
                             <a href="#" class="small delete"
@@ -106,7 +108,7 @@
                                 {{ answer.modify_date }}
                             </p>
                             <p>edit count: {{ answer.edit_count }}</p>
-                            <a>view edit history</a>
+                            <a href="{% url 'pybo:answer_history' answer.id %}">view edit history</a>
                         </div>
                         {% endif %}
                         <div class="badge badge-light p-2 text-left d-inline-flex flex-column justify-content-center">
@@ -134,9 +136,12 @@
                             <span>
                                 - {{ comment.author }}, {{ comment.create_date }}
                                 {% if comment.modify_date %}
-                                (수정:{{ comment.modify_date }})
+                                (수정: {{ comment.modify_date }}, 수정횟수: {{ comment.edit_count }})
                                 {% endif %}
                             </span>
+                            {% if comment.edit_count > 0 %}
+                            <a href="{% url 'pybo:comment_history' comment.id %}">view edit history</a>
+                            {% endif %}
                             {% if request.user == comment.author %}
                             <a href="{% url 'pybo:comment_modify_answer' comment.id  %}" class="small">수정</a>,
                             <a href="#" class="small delete"

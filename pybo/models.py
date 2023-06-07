@@ -15,6 +15,13 @@ class Question(models.Model):
         return self.subject
 
 
+class QuestionHistory(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=200)
+    content = models.TextField()
+    create_date = models.DateTimeField()
+
+
 class Answer(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_answer')
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -25,6 +32,12 @@ class Answer(models.Model):
     edit_count = models.IntegerField(default=0)
 
 
+class AnswerHistory(models.Model):
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    content = models.TextField()
+    create_date = models.DateTimeField()
+
+
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
@@ -33,3 +46,9 @@ class Comment(models.Model):
     question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, null=True, blank=True, on_delete=models.CASCADE)
     edit_count = models.IntegerField(default=0)
+
+
+class CommentHistory(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    content = models.TextField()
+    create_date = models.DateTimeField()

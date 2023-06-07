@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect, resolve_url
 from django.utils import timezone
 
 from ..forms import AnswerForm
-from ..models import Question, Answer
+from ..models import Question, Answer, AnswerHistory
 
 
 @login_required(login_url='common:login')
@@ -46,7 +46,15 @@ def answer_modify(request, answer_id):
             answer.author = request.user
             answer.modify_date = timezone.now()
             answer.edit_count += 1
+            # create answer history
+            history = AnswerHistory()
+            history.answer = answer
+            history.content = form.initial["content"]
+            history.create_date = answer.modify_date
+
+            # save to db
             answer.save()
+            history.save()
             return redirect('{}#answer_{}'.format(
                 resolve_url('pybo:detail', question_id=answer.question.id), answer.id))
     else:
@@ -66,3 +74,15 @@ def answer_delete(request, answer_id):
     else:
         answer.delete()
     return redirect('pybo:detail', question_id=answer.question.id)
+
+
+def answer_history(request, answer_id):
+    """
+    pybo 답변 수정내역
+    """
+    answer_histories = AnswerHistory.objects.filter(answer__id=answer_id)
+
+    context = {
+        "answer_histories": answer_histories
+    }
+    return render(request, "pybo/answer_history.html", context)

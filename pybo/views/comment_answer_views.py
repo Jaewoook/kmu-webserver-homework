@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect, resolve_url
 from django.utils import timezone
 
 from ..forms import CommentForm
-from ..models import Answer, Comment
+from ..models import Answer, Comment, CommentHistory
 
 
 @login_required(login_url='common:login')
@@ -46,7 +46,14 @@ def comment_modify_answer(request, comment_id):
             comment.author = request.user
             comment.modify_date = timezone.now()
             comment.edit_count += 1
+            history = CommentHistory()
+            history.comment = comment
+            history.content = form.initial["content"]
+            history.create_date = comment.modify_date
+
+            # save to db
             comment.save()
+            history.save()
             return redirect('{}#comment_{}'.format(
                 resolve_url('pybo:detail', question_id=comment.answer.question.id), comment.id))
     else:
