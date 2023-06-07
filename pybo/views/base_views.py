@@ -43,6 +43,15 @@ def detail(request, question_id):
     """
     pybo 내용 출력
     """
-    question = get_object_or_404(Question, pk=question_id)
-    context = {'question': question}
+    # 입력 파라미터
+    so = request.GET.get('so', 'recent')  # 정렬기준
+
+    if so == 'popular':
+        question = Question.objects.annotate(num_voter=Count('voter')).get(pk=question_id)
+        question_comments = question.comment_set.annotate(num_voter=Count('voter')).order_by('-num_voter')
+    else:
+        question = Question.objects.get(pk=question_id)
+        question_comments = question.comment_set.all().order_by('-create_date')
+        
+    context = {'question': question, "question_comments": question_comments, 'so': so}
     return render(request, 'pybo/question_detail.html', context)

@@ -52,9 +52,13 @@
                     </div>
                     {% endif %}
                     <!-- 질문 댓글 Start -->
-                    {% if question.comment_set.count > 0 %}
+                    {% if question_comments|length > 0 %}
                     <div class="mt-3">
-                    {% for comment in question.comment_set.all %}
+                        <select class="form-control so">
+                            <option value="recent" {% if so == 'recent' %}selected{% endif %}>최신순</option>
+                            <option value="popular" {% if so == 'popular' %}selected{% endif %}>인기순</option>
+                        </select>
+                    {% for comment in question_comments %}
                         <a name="comment_{{ comment.id }}"></a>
                         <div class="comment py-2 text-muted">
                             <span style="white-space: pre-line;">{{ comment.content }}</span>
@@ -64,8 +68,10 @@
                                 (수정: {{ comment.modify_date }}, 수정 횟수: {{ comment.edit_count }})
                                 {% endif %}
                             </span>
+                            <span>(추천: {{ comment.voter.count }}) -</span>
+                            <a href="{% url 'pybo:vote_comment' comment.id %}" class="small">추천하기</a>
                             {% if comment.edit_count > 0 %}
-                            <a href="{% url 'pybo:comment_history' comment.id %}">view edit history</a>
+                            <a href="{% url 'pybo:comment_history' comment.id %}" class="small">수정내역</a>
                             {% endif %}
                             {% if request.user == comment.author %}
                             <a href="{% url 'pybo:comment_modify_question' comment.id  %}" class="small">수정</a>,
@@ -139,8 +145,10 @@
                                 (수정: {{ comment.modify_date }}, 수정횟수: {{ comment.edit_count }})
                                 {% endif %}
                             </span>
+                            <span>(추천: {{ comment.voter.count }}) -</span>
+                            <a href="{% url 'pybo:vote_comment' comment.id %}" class="small">추천하기</a>
                             {% if comment.edit_count > 0 %}
-                            <a href="{% url 'pybo:comment_history' comment.id %}">view edit history</a>
+                            <a href="{% url 'pybo:comment_history' comment.id %}" class="small">수정내역</a>
                             {% endif %}
                             {% if request.user == comment.author %}
                             <a href="{% url 'pybo:comment_modify_answer' comment.id  %}" class="small">수정</a>,
@@ -178,6 +186,9 @@
         </div>
         <input type="submit" value="답변 등록" class="btn btn-primary">
     </form>
+    <form id="searchForm" method="get" action="{% url 'pybo:detail' question.id %}">
+        <input type="hidden" id="so" name="so" value="{{ so }}">
+    </form>
 </div>
 {% endblock %}
 {% block script %}
@@ -192,6 +203,10 @@ $(document).ready(function(){
         if(confirm("정말로 추천하시겠습니까?")) {
             location.href = $(this).data('uri');
         }
+    });
+    $(".so").on("change", function() {
+        $("#so").val($(this).val());
+        $("#searchForm").submit();
     });
 });
 </script>
