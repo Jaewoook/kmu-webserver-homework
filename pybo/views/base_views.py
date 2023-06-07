@@ -44,6 +44,7 @@ def detail(request, question_id):
     pybo 내용 출력
     """
     # 입력 파라미터
+    page = request.GET.get('page', '1')  # 페이지
     so = request.GET.get('so', 'recent')  # 정렬기준
 
     if so == 'popular':
@@ -52,6 +53,9 @@ def detail(request, question_id):
     else:
         question = Question.objects.get(pk=question_id)
         question_comments = question.comment_set.all().order_by('-create_date')
+
+    paginator = Paginator(question_comments, 5)
+    page_obj = paginator.get_page(page)
         
-    context = {'question': question, "question_comments": question_comments, 'so': so}
+    context = {'question': question, "question_comments": page_obj, 'page': page,'so': so}
     return render(request, 'pybo/question_detail.html', context)
